@@ -108,14 +108,12 @@ func (g *LambdaGenerator) addFunctions(svc *lambda.Client) error {
 			})
 
 			if err != nil {
-				// skip ResourceNotFoundException, because there may be only inline policy defined
+				// Skip ResourceNotFoundException, because there may be only inline policy defined
 				var apiErr smithy.APIError
 				if !errors.As(err, &apiErr) || apiErr.ErrorCode() != "ResourceNotFoundException" {
 					return err
 				}
-			}
-
-			if gp != nil {
+			} else {
 				outputPolicy := *gp.Policy
 				var policy Policy
 				err = json.Unmarshal([]byte(outputPolicy), &policy)
